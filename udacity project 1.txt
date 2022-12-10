@@ -1,0 +1,45 @@
+Guery 1  for Q1
+
+SELECT f.title , c.name , count(r.rental_id)
+FROM film_category AS fc JOIN category AS c
+ON c.category_id =fc.category_id
+JOIN film AS f ON F.film_id=fc.film_id
+JOIN inventory AS i ON i.film_id=f.film_id 
+JOIN rental AS r ON r.inventory_id=i.inventory_id
+WHERE c.name IN ('Animation' , 'Children' , 'Classics', 'Comedy' , 'Family','Music')
+GROUP BY 1,2
+ORDER BY 2,1
+
+
+Guery 2  for Q2
+
+SELECT count(f.title) ,c.name ,f.rental_duration,
+NTILE(4)OVER (ORDER BY f.rental_duration) AS standard_quartile
+FROM film_category AS fc JOIN category AS c
+ON c.category_id=fc.category_id 
+JOIN film AS f ON f.film_id=fc.film_id
+WHERE c.name IN ('Animation', 'Children','Classics','Comedy','Family','Music')
+GROUP BY c.name , f.rental_duration
+ORDER BY 3
+
+Guery 3  for Q3
+
+SELECT t.name , t.standard_quartile, COUNT(t.standard_quartile)
+FROM(SELECT f.title ,c.name , f.rental_duration, NTILE(4) OVER (ORDER BY f.rental_duration)AS standard_quartile
+FROM film_category AS fc JOIN category AS c
+ON c.category_id=fc.category_id
+JOIN film AS f ON f.film_id=fc.film_id
+WHERE c.name IN('Animation','Children','Classics','Comedy','Family','Music')) AS t
+GROUP BY 1,2
+ORDER BY 1,2
+
+Guery 4 for Q1 in Question set 2
+
+SELECT
+DATE_PART('month',r.rental_date) AS rental_month,
+DATE_PART('year',r.rental_date) AS rental_year,
+s.store_id , count(*)
+FROM store AS s JOIN staff AS st ON s.store_id=st.store_id
+JOIN rental AS r ON st.staff_id=r.staff_id
+GROUP BY 1,2,3
+ORDER BY 2,1
